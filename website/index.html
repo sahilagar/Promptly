@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quip - Type less. Say more.</title>
+    <meta name="description" content="Quip is a lightning-fast text expander for macOS. Type shortcuts, get instant expansions. Coming soon to the Mac App Store.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <nav class="nav">
+            <div class="logo">Quip</div>
+        </nav>
+
+        <div class="hero-content">
+            <h1 class="hero-title">Stop retyping.</h1>
+            <p class="hero-subtitle">Quip expands your shortcuts into full text, instantly.</p>
+
+            <!-- Typing Demo -->
+            <div class="demo-container">
+                <div class="demo-glow"></div>
+                <div class="demo-text-wrapper">
+                    <span id="demo-text"></span><span class="cursor"></span>
+                </div>
+            </div>
+
+            <!-- Coming Soon Badge -->
+            <div class="cta-container">
+                <a href="#" class="app-store-badge">
+                    <svg class="apple-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    <div class="badge-text">
+                        <span class="badge-small">Coming Soon on the</span>
+                        <span class="badge-large">Mac App Store</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <h2 class="section-title">How it works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Create your prompts</h3>
+                <p>Define triggers like <code>;rewrite</code> or <code>;commit</code> with your favorite prompts.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Type anywhere</h3>
+                <p>Works in ChatGPT, VS Code, Slack, email—any app on your Mac.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Press space</h3>
+                <p>Your shortcut instantly expands into the full prompt. Done.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2 class="section-title">Built for speed</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">&#9889;</div>
+                <h3>Lightning fast</h3>
+                <p>Native macOS app. No Electron, no lag. Just instant expansion.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">&#127760;</div>
+                <h3>Works everywhere</h3>
+                <p>Any text field, any application. If you can type, Quip works.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">&#59;</div>
+                <h3>Simple triggers</h3>
+                <p>Semicolon + keyword + space. That's it. No complex shortcuts to remember.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">&#128193;</div>
+                <h3>Stay organized</h3>
+                <p>Group your expansions into categories. Work, personal, code snippets.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">&#128203;</div>
+                <h3>Clipboard-safe</h3>
+                <p>Your clipboard contents are preserved. Copy something, expand, paste it back.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">&#128274;</div>
+                <h3>Private & secure</h3>
+                <p>Everything stays on your Mac. No cloud, no sync, no tracking.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples -->
+    <section class="examples">
+        <h2 class="section-title">You type these every day</h2>
+        <p class="section-subtitle">Stop retyping. Start quipping.</p>
+
+        <div class="example-category">
+            <h3 class="category-title">Email & Communication</h3>
+            <div class="examples-grid">
+                <div class="example">
+                    <div class="example-trigger">;followup</div>
+                    <div class="example-expansion">Just following up on my last message. Let me know if you have any questions!</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;avail</div>
+                    <div class="example-expansion">I'm available anytime this week. What works for you?</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;thanks</div>
+                    <div class="example-expansion">Thanks for sending this over! I'll review and get back to you.</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;ooo</div>
+                    <div class="example-expansion">I'm out of office until Monday. I'll respond when I'm back.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-category">
+            <h3 class="category-title">AI Prompts</h3>
+            <div class="examples-grid">
+                <div class="example">
+                    <div class="example-trigger">;fix</div>
+                    <div class="example-expansion">Fix this code and explain what was wrong</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;shorter</div>
+                    <div class="example-expansion">Make this shorter and more direct</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;pro</div>
+                    <div class="example-expansion">Rewrite this to sound more professional</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;eli5</div>
+                    <div class="example-expansion">Explain this like I'm five years old</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-category">
+            <h3 class="category-title">Code & Git</h3>
+            <div class="examples-grid">
+                <div class="example">
+                    <div class="example-trigger">;commit</div>
+                    <div class="example-expansion">Write a concise commit message for these changes</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;lgtm</div>
+                    <div class="example-expansion">Looks good to me! Approved.</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;pr</div>
+                    <div class="example-expansion">Write a pull request description for these changes</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;wip</div>
+                    <div class="example-expansion">Work in progress - do not merge</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-category">
+            <h3 class="category-title">Quick Responses</h3>
+            <div class="examples-grid">
+                <div class="example">
+                    <div class="example-trigger">;sync</div>
+                    <div class="example-expansion">Can we sync on this? I have a few questions.</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;ack</div>
+                    <div class="example-expansion">Got it, thanks!</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;eta</div>
+                    <div class="example-expansion">What's the ETA on this?</div>
+                </div>
+                <div class="example">
+                    <div class="example-trigger">;pls</div>
+                    <div class="example-expansion">Please let me know when you get a chance</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">Quip</div>
+            <p class="footer-tagline">Made with care for macOS</p>
+            <p class="footer-copyright">&copy; 2025 Quip. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
