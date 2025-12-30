@@ -53,7 +53,7 @@ code {
 }
 
 .logo {
-    font-size: 1.75rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: -0.02em;
@@ -170,12 +170,23 @@ code {
     51%, 100% { opacity: 0; }
 }
 
+.intro-text {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
 .trigger-text {
     color: var(--accent-light);
 }
 
 .expansion-text {
     color: var(--text-primary);
+}
+
+.link-text {
+    color: var(--accent-light);
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 /* App Store Badge */
@@ -400,6 +411,46 @@ section {
     line-height: 1.5;
 }
 
+/* Large examples - show the power */
+.examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.example-large {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+}
+
+.example-large:hover {
+    border-color: var(--accent);
+}
+
+.example-large .example-trigger {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent-light);
+    margin-bottom: 0.75rem;
+}
+
+.example-large .example-expansion {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.85;
+}
+
+.example-large .example-expansion .link {
+    color: var(--accent-light);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 /* Footer */
 .footer {
     border-top: 1px solid var(--border);
@@ -422,6 +473,20 @@ section {
 .footer-tagline {
     color: var(--text-secondary);
     margin-bottom: 1rem;
+}
+
+.footer-links {
+    margin-bottom: 1rem;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.footer-links a:hover {
+    color: var(--text-primary);
 }
 
 .footer-copyright {
