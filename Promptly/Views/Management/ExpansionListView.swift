@@ -1,6 +1,6 @@
 //
 //  ExpansionListView.swift
-//  quip
+//  Promptly
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
@@ -10,11 +10,10 @@ import SwiftData
 
 struct ExpansionListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openWindow) private var openWindow
     @Query(sort: \Expansion.trigger) private var expansions: [Expansion]
 
     @State private var searchText = ""
-    @State private var showingAddSheet = false
-    @State private var editingExpansion: Expansion?
 
     var groupedExpansions: [(String, [Expansion])] {
         let filtered = searchText.isEmpty
@@ -61,7 +60,10 @@ struct ExpansionListView: View {
                             ForEach(items) { expansion in
                                 ExpansionRowView(
                                     expansion: expansion,
-                                    onEdit: { editingExpansion = expansion },
+                                    onEdit: {
+                                        EditorState.shared.editExpansion(expansion)
+                                        openWindow(id: "edit-expansion")
+                                    },
                                     onDelete: { deleteExpansion(expansion) }
                                 )
                             }
@@ -74,19 +76,14 @@ struct ExpansionListView: View {
             HStack {
                 Spacer()
                 Button {
-                    showingAddSheet = true
+                    EditorState.shared.createNew()
+                    openWindow(id: "edit-expansion")
                 } label: {
                     Label("Add Shortcut", systemImage: "plus")
                 }
                 .buttonStyle(.borderedProminent)
             }
             .padding()
-        }
-        .sheet(isPresented: $showingAddSheet) {
-            ExpansionEditSheet(expansion: nil)
-        }
-        .sheet(item: $editingExpansion) { expansion in
-            ExpansionEditSheet(expansion: expansion)
         }
     }
 

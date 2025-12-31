@@ -1,6 +1,6 @@
 //
 //  PermissionManager.swift
-//  quip
+//  Promptly
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
@@ -18,12 +18,19 @@ class PermissionManager: ObservableObject {
     private var timer: Timer?
 
     private init() {
-        checkAccessibility()
+        _ = checkAccessibility()
     }
 
+    @discardableResult
     func checkAccessibility() -> Bool {
         let granted = AXIsProcessTrusted()
+        let wasGranted = isAccessibilityGranted
         isAccessibilityGranted = granted
+
+        if granted && !wasGranted {
+            KeyboardMonitor.shared.startMonitoring()
+        }
+
         return granted
     }
 

@@ -1,6 +1,6 @@
 //
 //  ExpansionEditSheet.swift
-//  quip
+//  Promptly
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
@@ -12,27 +12,21 @@ struct ExpansionEditSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Expansion.trigger) private var existingExpansions: [Expansion]
-
-    let expansion: Expansion?
+    @ObservedObject private var editorState = EditorState.shared
 
     @State private var trigger: String = ""
     @State private var content: String = ""
-    @State private var category: String = ""
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showLinkPopover = false
     @State private var linkText: String = ""
     @State private var linkURL: String = ""
 
+    private var expansion: Expansion? { editorState.expansionToEdit }
     var isEditing: Bool { expansion != nil }
-
-    var existingCategories: [String] {
-        Array(Set(existingExpansions.compactMap { $0.category })).sorted()
-    }
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
             HStack {
                 Text(isEditing ? "Edit Shortcut" : "New Shortcut")
                     .font(.headline)
@@ -43,9 +37,11 @@ struct ExpansionEditSheet: View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
                         .foregroundColor(.secondary)
                 }
                 .buttonStyle(.plain)
+                .keyboardShortcut(.escape, modifiers: [])
             }
             .padding()
 
@@ -72,6 +68,10 @@ struct ExpansionEditSheet: View {
                             .font(.system(.body, design: .monospaced))
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
+                            .onChange(of: trigger) { _, _ in
+                                // Clear error when user changes trigger
+                                showError = false
+                            }
                     }
                     .background(
                         RoundedRectangle(cornerRadius: 6)
@@ -107,9 +107,13 @@ struct ExpansionEditSheet: View {
 
                     TextEditor(text: $content)
                         .font(.body)
+                        .foregroundColor(.primary)
+                        .scrollContentBackground(.hidden)
                         .frame(height: 80)
                         .padding(4)
-                        .background(
+                        .background(Color(nsColor: .textBackgroundColor))
+                        .cornerRadius(6)
+                        .overlay(
                             RoundedRectangle(cornerRadius: 6)
                                 .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
                         )
@@ -122,39 +126,6 @@ struct ExpansionEditSheet: View {
                             Text("Link detected - will paste as clickable link")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                        }
-                    }
-                }
-
-                // Category field (optional)
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Category (optional)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-
-                    HStack {
-                        TextField("e.g., Greetings", text: $category)
-                            .textFieldStyle(.plain)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 6)
-                            .background(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-                            )
-
-                        if !existingCategories.isEmpty {
-                            Menu {
-                                ForEach(existingCategories, id: \.self) { cat in
-                                    Button(cat) {
-                                        category = cat
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "chevron.down")
-                                    .foregroundColor(.secondary)
-                            }
-                            .menuStyle(.borderlessButton)
-                            .frame(width: 30)
                         }
                     }
                 }
@@ -197,7 +168,6 @@ struct ExpansionEditSheet: View {
             if let expansion = expansion {
                 trigger = expansion.trigger
                 content = expansion.content
-                category = expansion.category ?? ""
             }
         }
     }
@@ -228,14 +198,12 @@ struct ExpansionEditSheet: View {
             // Update existing
             expansion.trigger = cleanTrigger
             expansion.content = content
-            expansion.category = category.isEmpty ? nil : category
             expansion.updatedAt = Date()
         } else {
             // Create new
             let newExpansion = Expansion(
                 trigger: cleanTrigger,
-                content: content,
-                category: category.isEmpty ? nil : category
+                content: content
             )
             modelContext.insert(newExpansion)
         }
@@ -312,6 +280,6 @@ struct ExpansionEditSheet: View {
 }
 
 #Preview {
-    ExpansionEditSheet(expansion: nil)
+    ExpansionEditSheet()
         .modelContainer(for: Expansion.self, inMemory: true)
 }

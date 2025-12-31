@@ -1,13 +1,13 @@
 //
-//  quipUITestsLaunchTests.swift
-//  quipUITests
+//  PromptlyUITestsLaunchTests.swift
+//  PromptlyUITests
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
 
 import XCTest
 
-final class quipUITestsLaunchTests: XCTestCase {
+final class PromptlyUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

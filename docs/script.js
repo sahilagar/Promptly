@@ -1,4 +1,4 @@
-// Quip typing animation
+// Promptly typing animation
 
 const demoText = document.getElementById('demo-text');
 

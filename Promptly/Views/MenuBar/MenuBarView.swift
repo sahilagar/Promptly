@@ -1,6 +1,6 @@
 //
 //  MenuBarView.swift
-//  quip
+//  Promptly
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
@@ -8,34 +8,14 @@
 import SwiftUI
 import SwiftData
 
-/// Wrapper view that handles onboarding window opening
-struct MenuBarContentView: View {
-    @Binding var hasCompletedOnboarding: Bool
-    @Environment(\.openWindow) private var openWindow
-    @State private var hasCheckedOnboarding = false
-
-    var body: some View {
-        MenuBarView()
-            .task {
-                // Only check once per app session
-                guard !hasCheckedOnboarding else { return }
-                hasCheckedOnboarding = true
-
-                if !hasCompletedOnboarding {
-                    openWindow(id: "onboarding")
-                }
-            }
-    }
-}
-
 struct MenuBarView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openWindow) private var openWindow
     @Query(sort: \Expansion.trigger) private var expansions: [Expansion]
 
     @State private var searchText = ""
-    @State private var showingAddSheet = false
-    @State private var editingExpansion: Expansion?
     @State private var isEnabled = true
+    @ObservedObject private var permissionManager = PermissionManager.shared
 
     var filteredExpansions: [Expansion] {
         if searchText.isEmpty {
@@ -49,15 +29,16 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
+            if !permissionManager.isAccessibilityGranted {
+                permissionBanner
+            }
+
             header
 
             Divider()
 
-            // Search
             searchBar
 
-            // Expansion list
             if filteredExpansions.isEmpty {
                 emptyState
             } else {
@@ -66,19 +47,12 @@ struct MenuBarView: View {
 
             Divider()
 
-            // Footer
             footer
         }
-        .frame(width: 320, height: 400)
+        .frame(width: 320, height: permissionManager.isAccessibilityGranted ? 400 : 440)
         .background(Color(nsColor: .windowBackgroundColor))
-        .sheet(isPresented: $showingAddSheet) {
-            ExpansionEditSheet(expansion: nil)
-        }
-        .sheet(item: $editingExpansion) { expansion in
-            ExpansionEditSheet(expansion: expansion)
-        }
         .onAppear {
-            // Update expansion engine with current expansions
+            _ = permissionManager.checkAccessibility()
             ExpansionEngine.shared.updateExpansions(expansions)
         }
         .onChange(of: expansions) { _, newValue in
@@ -86,27 +60,49 @@ struct MenuBarView: View {
         }
     }
 
+    private var permissionBanner: some View {
+        HStack {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundColor(.orange)
+            Text("Accessibility required")
+                .font(.caption)
+            Spacer()
+            Button("Enable") {
+                permissionManager.openAccessibilitySettings()
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+        }
+        .padding(10)
+        .background(Color.orange.opacity(0.15))
+    }
+
     private var header: some View {
         HStack {
             Image(systemName: "text.word.spacing")
                 .foregroundColor(.accentColor)
 
-            Text("Quip")
+            Text("Promptly")
                 .font(.headline)
 
             Spacer()
 
-            // Enable/disable toggle
-            Toggle("", isOn: $isEnabled)
-                .toggleStyle(.switch)
-                .controlSize(.small)
-                .onChange(of: isEnabled) { _, newValue in
-                    if newValue {
-                        KeyboardMonitor.shared.startMonitoring()
-                    } else {
-                        KeyboardMonitor.shared.stopMonitoring()
+            HStack(spacing: 6) {
+                Text(isEnabled ? "On" : "Off")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Toggle("", isOn: $isEnabled)
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                    .onChange(of: isEnabled) { _, newValue in
+                        if newValue {
+                            KeyboardMonitor.shared.startMonitoring()
+                        } else {
+                            KeyboardMonitor.shared.stopMonitoring()
+                        }
                     }
-                }
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -133,7 +129,11 @@ struct MenuBarView: View {
                 ForEach(filteredExpansions) { expansion in
                     ExpansionRowView(
                         expansion: expansion,
-                        onEdit: { editingExpansion = expansion },
+                        onEdit: {
+                            EditorState.shared.editExpansion(expansion)
+                            NSApplication.shared.activate(ignoringOtherApps: true)
+                            openWindow(id: "edit-expansion")
+                        },
                         onDelete: { deleteExpansion(expansion) }
                     )
                 }
@@ -169,7 +169,9 @@ struct MenuBarView: View {
     private var footer: some View {
         HStack {
             Button {
-                showingAddSheet = true
+                EditorState.shared.createNew()
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                openWindow(id: "edit-expansion")
             } label: {
                 Label("Add New", systemImage: "plus")
             }

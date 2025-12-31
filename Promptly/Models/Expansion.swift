@@ -1,6 +1,6 @@
 //
 //  Expansion.swift
-//  quip
+//  Promptly
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //

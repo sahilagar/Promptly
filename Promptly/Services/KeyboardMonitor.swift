@@ -1,6 +1,6 @@
 //
 //  KeyboardMonitor.swift
-//  quip
+//  Promptly
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
@@ -20,10 +20,7 @@ class KeyboardMonitor {
 
     func startMonitoring() {
         guard !isMonitoring else { return }
-        guard AXIsProcessTrusted() else {
-            print("Accessibility permission not granted")
-            return
-        }
+        guard AXIsProcessTrusted() else { return }
 
         let eventMask = (1 << CGEventType.keyDown.rawValue)
 
@@ -35,7 +32,6 @@ class KeyboardMonitor {
             callback: keyboardCallback,
             userInfo: nil
         ) else {
-            print("Failed to create event tap")
             return
         }
 
@@ -46,7 +42,6 @@ class KeyboardMonitor {
             CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
             CGEvent.tapEnable(tap: tap, enable: true)
             isMonitoring = true
-            print("Keyboard monitoring started")
         }
     }
 
@@ -64,7 +59,6 @@ class KeyboardMonitor {
         eventTap = nil
         runLoopSource = nil
         isMonitoring = false
-        print("Keyboard monitoring stopped")
     }
 }
 
@@ -75,7 +69,6 @@ private func keyboardCallback(
     refcon: UnsafeMutableRawPointer?
 ) -> Unmanaged<CGEvent>? {
 
-    // Handle tap disabled events (system can disable taps)
     if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
         if let tap = KeyboardMonitor.shared.eventTap {
             CGEvent.tapEnable(tap: tap, enable: true)
@@ -94,8 +87,10 @@ private func keyboardCallback(
     let keyCode = nsEvent.keyCode
     let characters = nsEvent.characters ?? ""
 
-    // Process the key event
-    _ = ExpansionEngine.shared.processKeyEvent(characters, keyCode: keyCode)
+    let didExpand = ExpansionEngine.shared.processKeyEvent(characters, keyCode: keyCode)
+    if didExpand {
+        return nil
+    }
 
     return Unmanaged.passUnretained(event)
 }

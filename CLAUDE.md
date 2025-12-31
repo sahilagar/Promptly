@@ -6,25 +6,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Build the app
-xcodebuild -scheme quip -configuration Debug build
+xcodebuild -scheme Promptly -configuration Debug build
 
 # Run tests
-xcodebuild -scheme quip -configuration Debug test
+xcodebuild -scheme Promptly -configuration Debug test
 
 # Clean build
-xcodebuild -scheme quip clean
+xcodebuild -scheme Promptly clean
 ```
 
 ## Architecture
 
-Quip is a native macOS menu bar text expansion app. Type `;shortcut` + space to expand text.
+Promptly is a native macOS menu bar text expansion app. Type `;shortcut` + space to expand text.
 
 ### Core Components
 
-**App Entry (`quipApp.swift`, `AppDelegate.swift`)**
+**App Entry (`PromptlyApp.swift`, `AppDelegate.swift`)**
 - `MenuBarExtra` with `.menuBarExtraStyle(.window)` for custom popover UI
-- `Window` scene for onboarding flow
-- `@AppStorage("hasCompletedOnboarding")` tracks first-launch state
+- `Window` scene for edit sheet
 - `AppDelegate` handles app lifecycle and keyboard monitor startup
 
 **Data Layer (`Models/Expansion.swift`)**
@@ -38,7 +37,6 @@ Quip is a native macOS menu bar text expansion app. Type `;shortcut` + space to 
 
 **Views**
 - `MenuBar/` - Main popover with search, expansion list, CRUD
-- `Onboarding/` - 3-page flow: Welcome → Permission → Demo
 - `Management/` - Row views and edit sheet
 
 ### Key Technical Details

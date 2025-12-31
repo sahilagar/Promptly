@@ -1,6 +1,6 @@
 //
 //  ExpansionEngine.swift
-//  quip
+//  Promptly
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
@@ -16,7 +16,9 @@ class ExpansionEngine {
     private var expansions: [Expansion] = []
     private var buffer: String = ""
     private let maxBufferSize = 100
-    private let queue = DispatchQueue(label: "com.quip.expansion", qos: .userInteractive)
+    private let queue = DispatchQueue(label: "com.promptly.expansion", qos: .userInteractive)
+
+    private var isExpanding = false
 
     private init() {}
 
@@ -32,7 +34,8 @@ class ExpansionEngine {
         queue.sync { [weak self] in
             guard let self = self else { return }
 
-            // Space triggers expansion check
+            if self.isExpanding { return }
+
             if character == " " {
                 if let expansion = self.checkForMatch() {
                     self.performExpansion(expansion)
@@ -44,7 +47,6 @@ class ExpansionEngine {
                 return
             }
 
-            // Backspace removes last character from buffer
             if keyCode == UInt16(kVK_Delete) {
                 if !self.buffer.isEmpty {
                     self.buffer.removeLast()
@@ -52,10 +54,8 @@ class ExpansionEngine {
                 return
             }
 
-            // Add character to buffer
             self.buffer += character
 
-            // Trim buffer if too long
             if self.buffer.count > self.maxBufferSize {
                 self.buffer = String(self.buffer.suffix(self.maxBufferSize))
             }
@@ -74,15 +74,21 @@ class ExpansionEngine {
     }
 
     private func performExpansion(_ expansion: Expansion) {
-        // Delete the trigger text (including the semicolon)
+        isExpanding = true
+
         let deleteCount = expansion.fullTrigger.count
 
         DispatchQueue.main.async {
             self.deleteCharacters(count: deleteCount)
 
-            // Small delay to ensure deletions are processed
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self.typeText(expansion.content)
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.queue.async {
+                        self.isExpanding = false
+                    }
+                }
             }
         }
     }

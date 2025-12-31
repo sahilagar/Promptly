@@ -1,14 +1,14 @@
 //
-//  quipTests.swift
-//  quipTests
+//  PromptlyTests.swift
+//  PromptlyTests
 //
 //  Created by Sahil Agarwal on 12/30/25.
 //
 
 import Testing
-@testable import quip
+@testable import Promptly
 
-struct quipTests {
+struct PromptlyTests {
 
     @Test func example() async throws {
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.
